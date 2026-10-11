@@ -1,0 +1,16 @@
+/var/lib/dailybuilder/projects/attention-intervention-lab/.venv/bin/python -m pytest -q
+........................................................................ [ 24%]
+........................................................................ [ 49%]
+........................................................................ [ 73%]
+........................................................................ [ 98%]
+.....                                                                    [100%]
+293 passed in 57.19s
+/var/lib/dailybuilder/projects/attention-intervention-lab/.venv/bin/python scripts/audit_results.py
+Independent audit passed: data splits/oracle, frozen hashes, 15,360 condition predictions, all aggregates, position slices, 95% intervals, ranks, ties, attention subset and no-op controls.
+/var/lib/dailybuilder/projects/attention-intervention-lab/.venv/bin/python scripts/installed_cli.py --wheelhouse /tmp/attention-wheelhouse
+Installed CLI passed: fresh isolated venv, local wheel, blocked network, three-seed checkpoint replay, byte-identical JSON/HTML, collision, timeout cleanup and malformed-input rejection.
+Installed CLI verification elapsed seconds: 78.504
+/var/lib/dailybuilder/projects/attention-intervention-lab/.venv/bin/python scripts/check_tree.py
+Artifact bounds passed: 67 files, 11,124,391 bytes; largest 2,321,375 bytes (results/evaluation/seed-29.json).
+All three artifact manifests valid; frozen architecture/forward pass unchanged.
+All verification commands passed in 140.092 seconds.
