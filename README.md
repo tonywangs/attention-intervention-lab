@@ -3,8 +3,30 @@
 An offline CPU workbench for comparing **where attention goes** with **what
 changes when a head's output is removed**. It includes a finished synthetic
 key-value retrieval experiment, three trained checkpoints, per-example results,
-and a self-contained interactive report. No API key, GPU, model download or
+and self-contained interactive reports. No API key, GPU, model download or
 server is needed to explore the saved report.
+
+**New: open [the paired-intervention report](results/interactions/report.html).**
+It evaluates all 28 head pairs on 512 fresh, dictionary-disjoint examples in
+each saved model. Pair interactions expose effects that individual removals
+miss, with substantial differences between models. In seed 29, two pairs
+reduced accuracy by about five percentage points while both single removals
+left accuracy unchanged; their interaction intervals remained below zero after
+the preregistered within-model comparison adjustment. Seed 47 had four such
+descriptive pairs but none resolved after adjustment; seed 11 had none.
+See [the full paired results and limits](docs/pair-results.md) and
+[the frozen design and prior work](docs/pair-protocol.md). This does not establish
+backup-head roles or a complete mechanism.
+
+Reproduce the paired experiment offline, after setup, with one command:
+
+```sh
+.venv/bin/python scripts/reproduce_pairs.py --output /tmp/attention-pair-reproduction
+```
+
+The output path must not already exist. The command regenerates the frozen
+new inputs, replays historical predictions, evaluates all singles and pairs,
+and compares saved logits, outcomes, statistics and HTML. No model is retrained.
 
 **Open [results/evaluation/report.html](results/evaluation/report.html) locally
 in a browser.** It offers seed/example/head selection, attention heatmaps and
@@ -56,7 +78,7 @@ experiment is about 11 MiB. The CPU wheel index avoids CUDA dependencies.
 After setup, this command runs completely offline:
 
 ```sh
-.venv/bin/python scripts/verify.py --wheelhouse /tmp/attention-wheelhouse --browsers /tmp/attention-browsers
+.venv/bin/python scripts/verify_pairs.py --wheelhouse /tmp/attention-wheelhouse --browsers /tmp/attention-browsers
 ```
 
 It runs 240 seeded scalar-reference attention checks plus full-model head/layer
@@ -67,7 +89,11 @@ an installed-CLI replay. The latter builds a wheel, installs it with local
 wheels into a fresh isolated environment, runs outside the checkout with Python
 network connections blocked, and compares all three checkpoint evaluations.
 It requires identical predictions and, on the pinned environment, byte-identical
-result JSON and HTML. Plain output is saved to `results/tests.log`.
+result JSON and HTML. The paired suite additionally runs 224 seeded simultaneous
+placement cases and 224 scalar interaction-arithmetic cases, audits every pair
+statistic independently, exercises all seed/pair/metric table values in Chromium,
+and replays the installed pair CLI. New verification prints to stdout so the
+historical `results/tests.log` stays unchanged.
 
 The verification never retrains the three models and uses temporary directories
 for replay. It normally takes a few minutes, primarily installing the isolated
@@ -130,13 +156,20 @@ establish authenticity if both data and manifest are replaced.
 
 Only four key-value pairs, 16 keys/values, one fixed sequence length and three
 training seeds are tested. Heads are not aligned across seeds. Zero ablation
-can create unusual activations; mean ablation, patching, interactions and
-natural-language generalization are untested. Bootstrap intervals are paired
+can create unusual activations; mean ablation, patching and
+natural-language generalization are untested. The original experiment's bootstrap intervals are paired
 within one model, conditional on this constructed test distribution, and not
 adjusted for multiple comparisons. A perfect finite test score does not imply
 perfect population accuracy. The report was exercised in Chromium, not every
 browser or assistive technology. Exact replay is verified in the pinned CPU
 environment; other platforms may differ within the frozen numerical tolerances.
+
+The paired follow-up tests zero-ablation interactions only; mean ablation and
+activation patching remain untested. Its family intervals account for all
+84 pair-by-metric interactions **within** one model, using an approximate paired
+stratified bootstrap. They provide no inference across training seeds. Constant
+or sparse binary contrasts need particular caution. The original single-head
+experiment and its unadjusted intervals remain unchanged.
 
 This project makes no novelty claim. [AttentionViz](https://arxiv.org/abs/2305.03210),
 [Michel et al.'s head-ablation work](https://arxiv.org/abs/1905.10650v3) and the

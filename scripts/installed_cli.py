@@ -24,7 +24,7 @@ def command(args, cwd, env, expected=0, timeout=180):
     return result.stdout
 
 
-def run(wheelhouse):
+def run(wheelhouse, pairs=False):
     wheelhouse=Path(wheelhouse).resolve()
     if not wheelhouse.is_dir() or not list(wheelhouse.glob('torch-*.whl')):
         raise ValueError('Prepare the offline wheelhouse first; see README.')
@@ -76,11 +76,36 @@ socket.getaddrinfo = blocked
         failure=command([cli,'evaluate','--training',bad,'--output',work/'bad-result'],work,env,expected=2)
         assert 'Traceback' not in failure and not (work/'bad-result').exists()
         print('Installed CLI passed: fresh isolated venv, local wheel, blocked network, three-seed checkpoint replay, byte-identical JSON/HTML, collision, timeout cleanup and malformed-input rejection.')
+        if pairs:
+            common = ['--training', ROOT/'experiments/final', '--previous', ROOT/'results/evaluation',
+                      '--protocol', ROOT/'experiments/interactions/protocol.json']
+            data = work/'pair-data'
+            command([cli, 'pair-prepare', *common, '--output', data], work, env)
+            for name in ('examples.json', 'inputs.json', 'manifest.json'):
+                assert (data/name).read_bytes() == (ROOT/'experiments/interactions/data'/name).read_bytes()
+            pair_out = work/'pair-replay'
+            pair_args = [cli, 'pair-replay', *common, '--data', data,
+                         '--reference', ROOT/'results/interactions', '--output', pair_out]
+            command(pair_args, work, env)
+            result = json.loads((pair_out/'replay.json').read_text())
+            assert result['within_frozen_tolerances'] and result['all_deterministic_files_identical']
+            before = (pair_out/'replay.json').read_bytes()
+            command(pair_args, work, env, expected=2)
+            assert (pair_out/'replay.json').read_bytes() == before
+            failed = work/'pair-timeout'
+            command([cli, 'pairs', *common, '--data', data, '--output', failed,
+                     '--max-seconds', '0.0000001'], work, env, expected=2)
+            assert not failed.exists() and not list(work.glob('.pair-timeout-*'))
+            rendered = work/'pair-report'
+            command([cli, 'pair-report', '--input', ROOT/'results/interactions', '--output', rendered], work, env)
+            assert (rendered/'report.html').read_bytes() == (ROOT/'results/interactions/report.html').read_bytes()
+            print('Installed pair CLI passed: regenerated disjoint inputs; all 114 condition/model combinations; byte-identical logits, outcomes, summary and HTML; collision protection; timeout cleanup; packaged template; blocked network.')
         print(f'Installed CLI verification elapsed seconds: {time.monotonic()-started:.3f}')
 
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--wheelhouse',required=True)
+    parser.add_argument('--pairs', action='store_true', help='also replay exhaustive paired interventions')
     args=parser.parse_args()
-    run(args.wheelhouse)
+    run(args.wheelhouse, args.pairs)

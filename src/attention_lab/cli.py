@@ -25,9 +25,38 @@ def main(argv=None):
     report = sub.add_parser("report", help="regenerate HTML from verified evaluation artifacts")
     report.add_argument("--input", required=True)
     report.add_argument("--output", required=True)
+    for name in ('pair-prepare', 'pairs', 'pair-replay'):
+        pair = sub.add_parser(name, help='frozen exhaustive pair experiment')
+        pair.add_argument('--training', required=True)
+        pair.add_argument('--previous', required=True)
+        pair.add_argument('--protocol', required=True)
+        pair.add_argument('--output', required=True)
+        if name != 'pair-prepare':
+            pair.add_argument('--data', required=True)
+            pair.add_argument('--max-seconds', type=float, default=7200)
+        if name == 'pair-replay':
+            pair.add_argument('--reference', required=True)
+    pair_report = sub.add_parser('pair-report', help='regenerate the paired intervention report')
+    pair_report.add_argument('--input', required=True)
+    pair_report.add_argument('--output', required=True)
     args = parser.parse_args(argv)
     try:
-        if args.command == "pilot":
+        if args.command in ('pair-prepare', 'pairs', 'pair-replay'):
+            from .interactions import prepare, evaluate_pairs, replay_pairs
+            if args.command == 'pair-prepare':
+                prepare(args.protocol, args.training, args.previous, args.output)
+            elif args.command == 'pairs':
+                evaluate_pairs(args.training, args.previous, args.protocol, args.data, args.output, args.max_seconds)
+            else:
+                replay_pairs(args.training, args.previous, args.protocol, args.data, args.reference, args.output, args.max_seconds)
+        elif args.command == 'pair-report':
+            from .artifacts import transaction, verify_manifest, write_json, manifest
+            from .interaction_report import render_directory
+            verify_manifest(args.input)
+            with transaction(args.output) as out:
+                render_directory(args.input, out/'report.html')
+                write_json(out/'manifest.json', manifest(out))
+        elif args.command == "pilot":
             from .train import pilot
             pilot(args.output, args.steps)
         elif args.command == "train":

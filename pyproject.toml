@@ -16,7 +16,7 @@ test = ["pytest==8.3.5", "playwright==1.51.0"]
 attention-lab = "attention_lab.cli:main"
 
 [tool.setuptools.package-data]
-attention_lab = ["report.html"]
+attention_lab = ["report.html", "pair_report.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

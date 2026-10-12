@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Paired Head Interventions — Retrieval Lab</title>
+<style>
+:root{color-scheme:light;--ink:#182f36;--muted:#4d6268;--paper:#f4f5ed;--line:#c5d0c9;--accent:#075f58}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,sans-serif}main{max-width:1240px;margin:auto;padding:36px 28px 64px}header{border-bottom:2px solid var(--ink);padding-bottom:24px}.eyebrow{font:600 12px/1.5 monospace;letter-spacing:.14em;color:var(--accent)}h1{font-size:clamp(30px,5vw,54px);letter-spacing:-.04em;line-height:1.1;margin:14px 0}h2{font-size:23px;margin-top:0}h3{font-size:17px}.intro{max-width:840px;color:var(--muted)}.tag{display:inline-block;border:1px solid var(--line);padding:4px 10px;margin:6px 8px 0 0;font-size:13px}.controls{display:flex;flex-wrap:wrap;gap:16px;padding:24px 0}label{display:flex;flex-direction:column;font-size:13px;font-weight:650;gap:6px}select,button{font:inherit;color:var(--ink);background:white;border:1px solid #879f97;border-radius:4px;min-height:44px;padding:8px 12px}button{cursor:pointer}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #ab4b0a;outline-offset:3px}.panel{background:white;border:1px solid var(--line);padding:24px;margin:0 0 20px;border-radius:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.value{font:600 clamp(28px,4vw,44px)/1.2 ui-monospace,monospace;letter-spacing:-.04em;margin:12px 0}.small{font-size:13px;color:var(--muted)}.strip{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.scroll{max-width:100%;overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}caption{text-align:left;font-weight:600;margin-bottom:12px}th,td{text-align:right;border-bottom:1px solid #dce3dd;padding:10px 12px;white-space:nowrap}th:first-child,td:first-child{text-align:left}thead th{background:#eef2ee}tbody tr[aria-selected=true]{background:#e2f0e9}#all-pairs button{font-size:12px;min-height:36px}summary{cursor:pointer;padding:8px 0}code{overflow-wrap:anywhere}#tokens{font-family:monospace;overflow-wrap:anywhere}.notice{border-left:4px solid var(--accent);padding-left:16px}a{color:var(--accent)}footer{font-size:13px;border-top:1px solid var(--line);padding-top:20px}.chart{display:flex;flex-direction:column;gap:9px}.bar-row{display:grid;grid-template-columns:100px 1fr 100px;gap:12px;align-items:center;font-size:12px}.track{height:12px;background:#edf1ed;position:relative}.bar{height:12px;background:#287e6b;position:absolute}.zero{position:absolute;left:50%;height:16px;top:-2px;border-left:1px solid #71847c}
+@media(max-width:750px){main{padding:24px 14px}.panel{padding:16px}.grid{grid-template-columns:1fr}.controls label{flex:1;min-width:140px}select{width:100%;max-width:100%}.bar-row{grid-template-columns:80px 1fr 80px}}
+</style>
+<main>
+<header><div class="eyebrow">ATTENTION INTERVENTION LAB / EXPERIMENT 02</div><h1>What changes when two heads go?</h1><p class="intro">Compare each individual removal with their joint removal. Every pair was fixed before evaluation. An interaction measures departure from additivity on the selected output metric; it does not identify a complete mechanism.</p><span class="tag">3 saved models</span><span class="tag">28 exhaustive pairs / model</span><span class="tag">512 fresh examples</span><span class="tag">CPU · offline · no retraining</span></header>
+<div class="controls"><label>Training seed<select id="seed"></select></label><label>Head pair<select id="pair"></select></label><label>Output metric<select id="metric"><option value="loss">Cross-entropy loss</option><option value="p_correct">Correct-answer probability</option><option value="accuracy">Accuracy</option></select></label></div>
+<p id="status" role="status" aria-live="polite"></p>
+<div class="grid"><section class="panel"><div class="eyebrow">JOINT EFFECT − SUM OF SINGLE EFFECTS</div><div class="value" id="interaction"></div><p id="interpretation"></p><p class="small" id="interval"></p><p class="small" id="decision"></p></section><section class="panel"><h2>Single versus joint</h2><div class="chart" id="chart" aria-hidden="true"></div><p class="small">Centered bars share one scale within this panel. Exact values appear in the table below.</p><div class="scroll"><table id="effects"><caption>Mean change from intact execution</caption><thead><tr><th scope="col">Condition</th><th scope="col">Effect</th><th scope="col">95% pointwise interval</th></tr></thead><tbody></tbody></table></div></section></div>
+<section class="panel"><h2>All 28 pairs</h2><p class="small">Fixed order, including null and negative results. “Resolved” means the approximate simultaneous interval clears zero by more than 0.000002; it is conditional on this model and test distribution. Constant bootstrap contrasts are descriptive only.</p><div class="scroll" tabindex="0" role="region" aria-label="All pair numeric results"><table id="all-pairs"><caption id="all-caption"></caption><thead><tr><th scope="col">Pair</th><th scope="col">Single A</th><th scope="col">Single B</th><th scope="col">Joint</th><th scope="col">Interaction</th><th scope="col">95% family interval</th><th scope="col">Assessment</th></tr></thead><tbody></tbody></table></div></section>
+<section class="panel"><h2>Inspect a paired example</h2><p class="small">The first 16 examples were fixed by protocol. All 512 examples contribute to the estimates above and are preserved in the numeric artifacts.</p><div class="strip"><label>Example<select id="example"></select></label><button id="prev" type="button">Previous example</button><button id="next" type="button">Next example</button></div><p id="tokens"></p><p id="answer"></p><div class="scroll"><table id="example-values"><caption>Same input under four interventions, full precision</caption><thead><tr><th scope="col">Condition</th><th scope="col">Loss</th><th scope="col">P(correct)</th><th scope="col">Correct (0/1)</th></tr></thead><tbody></tbody></table></div><p id="example-interaction"></p></section>
+<section class="panel"><h2>How to read this experiment</h2><p class="notice">All effects use <strong>condition − intact</strong>. Positive loss changes mean harm. Negative probability and accuracy changes mean harm. Interaction signs are metric-dependent: a negative accuracy interaction indicates more joint damage than the sum of the individual changes.</p><p>Paired bootstrap samples preserve the four balanced answer-position strata. The 10,000 resamples use the same examples for all conditions. Family intervals use the centered standardized maximum over all 28 pairs × 3 metrics within one seed. They are approximate, not an exact coverage guarantee. Pointwise effect intervals are unadjusted. No interval combines training seeds.</p><p id="hidden"></p><details><summary>Full-precision selected interaction and provenance</summary><pre id="precision" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details><h3>Interpretation limits</h3><ul id="limits"></ul></section>
+<footer>Self-contained local report. No network requests, analytics, external fonts or model execution. Raw arrays: condition × example × answer (logits), and condition × example × [loss, probability, accuracy] (outcomes). See the adjacent protocol, summary, examples and provenance files for reproduction.</footer>
+</main>
+<script type="application/json" id="data">__PAYLOAD__</script>
+<script>
+'use strict';
+const D=JSON.parse(document.querySelector('#data').textContent),P=D.protocol,S=D.summary;
+const el=id=>document.getElementById(id),fmt=x=>Number(x).toFixed(6),ci=x=>'['+x.map(fmt).join(', ')+']';
+function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
+function option(select,value,text){const n=node('option',text);n.value=value;select.append(n);}
+S.seeds.forEach((s,i)=>option(el('seed'),i,String(s.seed)));
+P.pairs.forEach((p,i)=>option(el('pair'),i,p.join(' + ')));
+D.rows.forEach((r,i)=>option(el('example'),i,r.id));
+S.limits.forEach(t=>el('limits').append(node('li',t)));
+function draw(){
+ const seed=S.seeds[Number(el('seed').value)],i=Number(el('pair').value),m=el('metric').value,e=Number(el('example').value);
+ const pair=seed.pairs[i],v=pair.metrics[m],names=[...pair.pair,pair.pair.join('+')];
+ const condition=name=>seed.conditions.find(c=>c.name===name).metrics[m];
+ const a=condition(names[0]),b=condition(names[1]),j=condition(names[2]);
+ el('status').textContent='Seed '+seed.seed+' · '+names[2]+' · '+m+' · all 512 paired examples';
+ el('interaction').textContent=fmt(v.mean);
+ el('interpretation').textContent=m==='loss'?'Positive interaction: extra loss beyond the sum of individual removals.':'Negative interaction: extra damage beyond the sum of individual removals.';
+ el('interval').textContent='95% simultaneous interval: '+ci(v.ci95_family)+' · pointwise: '+ci(v.ci95_pointwise);
+ el('decision').textContent=v.degenerate?'Constant resampled contrast — descriptive only; a collapsed interval is not proof of population equality.':v.resolved?'Resolved nonzero interaction within this model’s 84-measure family.':'Not resolved from zero at the frozen tolerance and simultaneous interval; this does not prove additivity.';
+ const rows=[[names[0],a.effect,a.effect_ci95],[names[1],b.effect,b.effect_ci95],['Sum of singles',a.effect+b.effect,null],['Joint',j.effect,j.effect_ci95]];
+ const body=el('effects').tBodies[0];body.replaceChildren();el('chart').replaceChildren();
+ const scale=Math.max(...rows.map(r=>Math.abs(r[1])),1e-12);
+ rows.forEach(r=>{const tr=node('tr','');r.forEach((x,k)=>tr.append(node(k===0?'th':'td',k===0?x:k===1?fmt(x):x?ci(x):'—')));body.append(tr);
+   const row=node('div','');row.className='bar-row';row.append(node('span',r[0]));const track=node('div','');track.className='track';const bar=node('div','');bar.className='bar';const width=Math.abs(r[1])/scale*50;bar.style.width=width+'%';bar.style.left=(r[1]<0?50-width:50)+'%';track.append(bar);const zero=node('span','');zero.className='zero';track.append(zero);row.append(track,node('span',fmt(r[1])));el('chart').append(row);});
+ el('all-caption').textContent='Seed '+seed.seed+' · '+m+' · 95% simultaneous intervals over 84 interaction measures';
+ const all=el('all-pairs').tBodies[0];all.replaceChildren();
+ seed.pairs.forEach((p,k)=>{const tr=node('tr','');tr.setAttribute('aria-selected',String(k===i));const th=node('th','');th.scope='row';const button=node('button',p.pair.join(' + '));button.type='button';button.setAttribute('aria-label','Inspect '+p.pair.join(' and '));button.addEventListener('click',()=>{el('pair').value=k;draw();el('pair').focus();});th.append(button);tr.append(th);
+  const t=p.metrics[m];[condition(p.pair[0]).effect,condition(p.pair[1]).effect,condition(p.pair.join('+')).effect,t.mean].forEach(x=>tr.append(node('td',fmt(x))));tr.append(node('td',ci(t.ci95_family)),node('td',t.degenerate?'Constant':t.resolved?'Resolved':'Unresolved'));all.append(tr);});
+ const row=D.rows[e];el('tokens').textContent=row.tokens.map(t=>t<16?'K'+t:t<32?'V'+(t-16):'QUERY').join('  ');el('answer').textContent='Dictionary answer: V'+row.answer+' · value token position '+row.value_position;
+ const eb=el('example-values').tBodies[0];eb.replaceChildren();
+ ['intact',...names].forEach(name=>{const tr=node('tr','');tr.append(node('th',name));seed.examples[P.conditions.indexOf(name)][e].forEach(x=>tr.append(node('td',String(x))));eb.append(tr);});
+ const mi=['loss','p_correct','accuracy'].indexOf(m),at=name=>seed.examples[P.conditions.indexOf(name)][e][mi];
+ el('example-interaction').textContent='Example interaction ('+m+'): '+String(at(names[2])-at(names[0])-at(names[1])+at('intact'));
+ el('prev').disabled=e===0;el('next').disabled=e===15;
+ const hidden=seed.pairs.filter(p=>p.hidden_accuracy).length;
+ el('hidden').textContent=hidden+' of 28 pairs in this seed lowered accuracy while both individual removals left aggregate accuracy unchanged. This is a descriptive flag, not an uncertainty-adjusted claim or a backup-head label.';
+ el('precision').textContent=JSON.stringify({seed:seed.seed,pair:pair.pair,metric:m,...v,protocol_sha256:S.protocol_sha256,examples_sha256:S.examples_sha256,family_critical_value:seed.family_critical_value},null,2);
+}
+['seed','pair','metric','example'].forEach(id=>el(id).addEventListener('change',draw));
+el('prev').addEventListener('click',()=>{el('example').value=Math.max(0,Number(el('example').value)-1);draw();});
+el('next').addEventListener('click',()=>{el('example').value=Math.min(15,Number(el('example').value)+1);draw();});
+draw();
+</script>
+</html>
