@@ -6,7 +6,26 @@ key-value retrieval experiment, three trained checkpoints, per-example results,
 and self-contained interactive reports. No API key, GPU, model download or
 server is needed to explore the saved report.
 
-**New: open [the paired-intervention report](results/interactions/report.html).**
+**Latest: [zero versus mean-ablation comparison](results/mean/report.html).**
+The exhaustive follow-up uses 512 separate calibration examples and 512 fresh
+evaluation examples, without retraining. Of seed 29's two previously highlighted
+accuracy interactions, L1H0 + L1H3 remains resolved under mean ablation;
+L0H0 + L0H2 is smaller and unresolved. Neither pair has a resolved paired method
+difference. All 28 pairs and all three models are reported, including null results.
+See [results and limitations](docs/mean-results.md) and [the frozen design](docs/mean-protocol.md).
+
+```sh
+.venv/bin/python scripts/reproduce_mean.py --output /tmp/attention-mean-reproduction
+.venv/bin/python scripts/verify_mean.py --wheelhouse /tmp/attention-wheelhouse --browsers /tmp/attention-browsers
+```
+
+The first command reproduces this experiment offline into a new directory. The
+second retains all historical checks and adds independent calibration, replacement,
+statistics, malformed-artifact, cancellation, Chromium and isolated installed-CLI
+checks. Setup is below. The separate `attention-mean` CLI provides `prepare`,
+`evaluate`, `replay` and `report`; historical `attention-lab` behavior is preserved.
+
+**Previous: open [the paired-intervention report](results/interactions/report.html).**
 It evaluates all 28 head pairs on 512 fresh, dictionary-disjoint examples in
 each saved model. Pair interactions expose effects that individual removals
 miss, with substantial differences between models. In seed 29, two pairs
@@ -71,7 +90,7 @@ Chromium also needs its usual operating-system shared libraries. The browser
 and wheel cache are not project artifacts and are not committed. The cache is
 specific to the OS/Python architecture; prepare a matching cache for another
 machine. Dependencies use roughly 1 GiB installed disk space; the tracked
-experiment is about 11 MiB. The CPU wheel index avoids CUDA dependencies.
+experiments are about 27 MiB. The CPU wheel index avoids CUDA dependencies.
 
 ## One verification command
 
@@ -155,17 +174,17 @@ establish authenticity if both data and manifest are replaced.
 ## Limits
 
 Only four key-value pairs, 16 keys/values, one fixed sequence length and three
-training seeds are tested. Heads are not aligned across seeds. Zero ablation
-can create unusual activations; mean ablation, patching and
-natural-language generalization are untested. The original experiment's bootstrap intervals are paired
+training seeds are tested. Heads are not aligned across seeds. Zero and mean ablation
+can create unusual activations; patching and natural-language generalization
+remain untested. The original experiment's bootstrap intervals are paired
 within one model, conditional on this constructed test distribution, and not
 adjusted for multiple comparisons. A perfect finite test score does not imply
 perfect population accuracy. The report was exercised in Chromium, not every
 browser or assistive technology. Exact replay is verified in the pinned CPU
 environment; other platforms may differ within the frozen numerical tolerances.
 
-The paired follow-up tests zero-ablation interactions only; mean ablation and
-activation patching remain untested. Its family intervals account for all
+The historical paired follow-up tests zero-ablation interactions only. The new
+mean-ablation comparison is separate; activation patching remains untested. Its family intervals account for all
 84 pair-by-metric interactions **within** one model, using an approximate paired
 stratified bootstrap. They provide no inference across training seeds. Constant
 or sparse binary contrasts need particular caution. The original single-head
