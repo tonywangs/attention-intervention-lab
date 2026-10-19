@@ -1,12 +1,39 @@
 # Attention Intervention Lab
 
-An offline CPU workbench for comparing **where attention goes** with **what
-changes when a head's output is removed**. It includes a finished synthetic
-key-value retrieval experiment, three trained checkpoints, per-example results,
-and self-contained interactive reports. No API key, GPU, model download or
-server is needed to explore the saved report.
+An offline CPU workbench linking **where attention goes** to **what changes
+when a head's output is replaced**. The pretrained example uses a pinned
+Pythia-14M checkpoint and provenance-tracked public literary text. Historical
+synthetic retrieval experiments remain available below.
 
-**Latest: [zero versus mean-ablation comparison](results/mean/report.html).**
+**Start here: [pretrained-model report](results/pretrained/report.html).**
+Inspect all 24 heads, zero and separately calibrated mean replacements,
+per-token losses, no-op controls and intact attention. All no-op losses match
+exactly; two heads reverse aggregate effect sign between replacement methods.
+These are descriptive results on a small corpus, not general head functions.
+See [setup, reproduction, measured results and limitations](docs/pretrained.md).
+
+Launch the saved report without model downloads or extra dependencies:
+
+```sh
+python3 -m http.server 8765 --bind 127.0.0.1 --directory results/pretrained
+```
+
+Open <http://127.0.0.1:8765/report.html>, or open the HTML file directly. After
+installing the documented pretrained dependencies, reproduce with:
+
+```sh
+.venv/bin/python -m attention_lab.pretrained fetch
+.venv/bin/python -m attention_lab.pretrained run --output /tmp/attention-pretrained-replay
+.venv/bin/python scripts/verify_pretrained.py --replay /tmp/attention-pretrained-replay
+```
+
+`fetch` downloads public hash-verified model assets once. `run` is offline and
+refuses to overwrite an existing output directory. Saved-report viewing needs
+neither operation. No API key or GPU is required.
+
+## Historical synthetic experiments
+
+**Synthetic follow-up: [zero versus mean-ablation comparison](results/mean/report.html).**
 The exhaustive follow-up uses 512 separate calibration examples and 512 fresh
 evaluation examples, without retraining. Of seed 29's two previously highlighted
 accuracy interactions, L1H0 + L1H3 remains resolved under mean ablation;

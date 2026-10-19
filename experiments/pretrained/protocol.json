@@ -1,0 +1,33 @@
+{
+  "model": "EleutherAI/pythia-14m",
+  "revision": "cf967c0a9a04383db6f7b1108d86b2962634b4ac",
+  "created_utc": "2026-10-19T09:32:32.249349+00:00",
+  "selection_before_outcomes": true,
+  "layers": 6,
+  "heads": 4,
+  "head_dim": 32,
+  "blocks_per_split": 16,
+  "input_tokens": 64,
+  "targets_per_block": 64,
+  "batch_size": 2,
+  "threads": 2,
+  "dtype": "float32",
+  "attention": "eager",
+  "seed": 1729,
+  "methods": [
+    "intact",
+    "noop",
+    "zero",
+    "mean"
+  ],
+  "replacement": "Replace one head in concatenated attention-weighted values immediately before attention.dense; retain output projection bias and residual paths. Noop clones and reassigns the original head. Intervene at all 64 positions.",
+  "calibration": "Unweighted mean of intact per-head value outputs across all 1024 input positions of the separate calibration book, including position zero; fixed across evaluation positions.",
+  "metric": "Cross-entropy in nats at every position against the next token; mean over 16 equally sized blocks. Positive intervention-minus-intact means worse.",
+  "uncertainty": "Descriptive block deltas, min/max and improved/harmed counts only. Consecutive blocks are dependent; no population confidence interval or significance claim.",
+  "visual_examples": [
+    0,
+    1
+  ],
+  "visual_heads": "all 24; selection controls display only",
+  "scope": "One small pretrained checkpoint, two short book excerpts, no held-out-from-pretraining claim; no novelty or universal head-function claim."
+}

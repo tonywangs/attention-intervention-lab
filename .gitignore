@@ -9,3 +9,5 @@ node_modules/
 *.log
 !results/tests.log
 .playwright/
+
+.cache/

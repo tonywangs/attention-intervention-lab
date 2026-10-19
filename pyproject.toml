@@ -5,16 +5,18 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "attention-intervention-lab"
 version = "0.1.0"
-description = "Offline synthetic retrieval and attention-head intervention workbench"
+description = "CPU pretrained and synthetic attention-head intervention workbench"
 requires-python = ">=3.11"
 dependencies = ["numpy==2.2.6", "torch==2.6.0"]
 
 [project.optional-dependencies]
+pretrained = ["transformers==4.51.3", "safetensors==0.5.3"]
 test = ["pytest==8.3.5", "playwright==1.51.0"]
 
 [project.scripts]
 attention-lab = "attention_lab.cli:main"
 attention-mean = "attention_lab.mean_cli:main"
+attention-pretrained = "attention_lab.pretrained:main"
 
 [tool.setuptools.package-data]
 attention_lab = ["report.html", "pair_report.html"]

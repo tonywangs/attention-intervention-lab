@@ -1,0 +1,8 @@
+{
+  "calibration.txt": "67ded9226ed8eed5889156adb1551fba5e7c17a647aef150d6d93cb199fc4c61",
+  "evaluation.txt": "f229dfd87c9d6de9b5fce8d98a1ee20eee983a07df7cbb7aa3238a7c98d218c1",
+  "inputs.json": "22ccd9a5badf8323de8e22407efa1d2c9d66b9a49d0c22dcde41f1ca90c5ad3f",
+  "model.json": "ae407a808f610ffec44b97adcdd462ae808cb8a0cd604749aae596dd6bca9193",
+  "protocol.json": "b9973e5a246f4f166d8b6c0ed20481ea6c84c87e34f710c0b5595d44b2f7f29b",
+  "sources.json": "3290042c86569fd1b6ce488de8a31a0c8025a4a6a1e3f49e8653a0d6ec8203e0"
+}

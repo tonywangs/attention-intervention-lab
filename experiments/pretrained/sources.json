@@ -1,0 +1,34 @@
+[
+  {
+    "split": "calibration",
+    "url": "https://www.gutenberg.org/ebooks/11.txt.utf-8",
+    "retrieved_utc": "2026-10-19T09:32:32.216260+00:00",
+    "raw_sha256": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+    "normalization": "UTF-8 decode, CRLF to LF; no further normalization",
+    "start_character": 1501,
+    "end_character": 13501,
+    "start_marker": "Alice was beginning to get very tired",
+    "excerpt_file": "calibration.txt",
+    "excerpt_sha256": "67ded9226ed8eed5889156adb1551fba5e7c17a647aef150d6d93cb199fc4c61",
+    "selection": "First 1040 tokens, no special tokens, 16 consecutive non-overlapping 65-token blocks; last token is target only",
+    "title": "Alice’s Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "rights": "Public domain in the USA; see source rights statement for other jurisdictions."
+  },
+  {
+    "split": "evaluation",
+    "url": "https://www.gutenberg.org/ebooks/1661.txt.utf-8",
+    "retrieved_utc": "2026-10-19T09:32:32.243511+00:00",
+    "raw_sha256": "922e2a12ccb43a4c9544c260b2166c6ad2097aeb5957faeee113f173bb857cd0",
+    "normalization": "UTF-8 decode, CRLF to LF; no further normalization",
+    "start_character": 1506,
+    "end_character": 13506,
+    "start_marker": "To Sherlock Holmes she is always",
+    "excerpt_file": "evaluation.txt",
+    "excerpt_sha256": "f229dfd87c9d6de9b5fce8d98a1ee20eee983a07df7cbb7aa3238a7c98d218c1",
+    "selection": "First 1040 tokens, no special tokens, 16 consecutive non-overlapping 65-token blocks; last token is target only",
+    "title": "The Adventures of Sherlock Holmes",
+    "author": "Arthur Conan Doyle",
+    "rights": "Public domain in the USA; see source rights statement for other jurisdictions."
+  }
+]

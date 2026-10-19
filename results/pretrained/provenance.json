@@ -1,0 +1,28 @@
+{
+  "model": {
+    "model_id": "EleutherAI/pythia-14m",
+    "revision": "cf967c0a9a04383db6f7b1108d86b2962634b4ac",
+    "files": {
+      "config.json": "f97f966a66c444890ed461fff2a51eefb15d74303df05b948124719f199b0b17",
+      "tokenizer.json": "870f4e2baa6b683221fa52004d5d6f40ab8c9d31961617304b78c910c2c3caf2",
+      "tokenizer_config.json": "eee017c5bd133137f45907bd0a6e781e2ccd1a533734b7ed2a2f2f4446659809",
+      "special_tokens_map.json": "10b8c8852c1e1f70b54d9aff61728408c28971c0e97a6c5a7b2debbd1d3e9c0c",
+      "model.safetensors": "116a02532db461f91386a5b20f942ff2c8d4de7341e21b55caafc3d7b25f49a1",
+      "README.md": "d1f2cf1d5181daedeaa70208ddd5cc5251867bde9acf6db7bb45a2265e25e163"
+    }
+  },
+  "protocol_sha256": "b9973e5a246f4f166d8b6c0ed20481ea6c84c87e34f710c0b5595d44b2f7f29b",
+  "inputs_sha256": "22ccd9a5badf8323de8e22407efa1d2c9d66b9a49d0c22dcde41f1ca90c5ad3f",
+  "spec_manifest_sha256": "4d3d90f8d5b29d6f2a1bf44a5c1ff0895a3effa2464634ac042c263e86931fba",
+  "implementation_sha256": "af9f0cac52dd25a90318584585362219645bbf81aa63e54b7d345803296a8842",
+  "renderer_sha256": "afd59db65ea45e69290e687269499662e98cbdffbb800b2931ea367039dead10",
+  "python": "3.12.3",
+  "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.39",
+  "torch": "2.6.0+cpu",
+  "numpy": "2.2.6",
+  "transformers": "4.51.3",
+  "elapsed_seconds": 118.56612989027053,
+  "device": "cpu",
+  "threads": 2,
+  "dtype": "float32"
+}
